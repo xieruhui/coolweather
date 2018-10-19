@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
+import com.coolweather.android.service.AutoUpdateService;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -115,9 +116,9 @@ public class WeatherActivity extends AppCompatActivity {
 
 
     public void requestWeather(final String weatherId){
-        Log.d("main",weatherId);
-       String weatherUrl="http://guolin.tech/api/weather?cityid="+weatherId+"&key=fd6e99cbeae24b3bbfdafb9920bddb19";
 
+       String weatherUrl="http://guolin.tech/api/weather?cityid="+weatherId+"&key=fd6e99cbeae24b3bbfdafb9920bddb19";
+        Log.d("main",weatherUrl);
         HttpUtil.sendOkHttpRequest(weatherUrl,new okhttp3.Callback(){
             @Override
             public void onFailure(Call call, IOException e) {
@@ -135,6 +136,7 @@ public class WeatherActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseText=response.body().string();
                 final Weather weather=Utility.handleWeatherResponse(responseText);
+                Log.d("api",weather.aqi.city.aqi+"");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -179,7 +181,8 @@ public class WeatherActivity extends AppCompatActivity {
             forecastLayout.addView(view);
         }
         if(weather.aqi!=null){
-            apiText.setText(weather.aqi.city.api);
+            Log.d("api",weather.aqi.city.aqi+"");
+            apiText.setText(weather.aqi.city.aqi);
             pm25Text.setText(weather.aqi.city.pm25);
         }
         String comfort="舒适度:"+weather.suggestion.comfort.info;
@@ -189,6 +192,8 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        Intent intent=new Intent(this,AutoUpdateService.class);
+        startService(intent);
     }
     private void loadBingPic(){
         Log.d("main","1");
