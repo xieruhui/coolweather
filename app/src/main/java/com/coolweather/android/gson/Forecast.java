@@ -14,7 +14,7 @@ public class Forecast {
         @SerializedName("txt_d")
         public String info;
     }
-    @SerializedName("temp")
+    @SerializedName("tmp")
     public Temperature temperature;
     public class Temperature{
         public String max;
